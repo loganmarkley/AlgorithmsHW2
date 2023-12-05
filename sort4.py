@@ -37,22 +37,52 @@ def insertionSort(inputArr: list[int], size: int) -> None:   # I print in the fu
     for i in range(1, size):
         v = inputArr[i]
         j = i-1
-        while(j >= 0 and inputArr[j] > v):
+        while(j >= 0):
             numKeyComparisons += 1
-            numArrayAssignments += 1
-            inputArr[j+1] = inputArr[j]
-            j -= 1
+            if(inputArr[j] > v):
+                inputArr[j+1] = inputArr[j]
+                numArrayAssignments += 1
+                j -= 1
+            else:
+                break
         inputArr[j+1] = v
         numArrayAssignments += 1
         
     print(f"{numKeyComparisons} {numArrayAssignments}")
     return
 
-def mergeSort(inputArr: list[int], size: int) -> None:   # I print in the function itself
+def mergeSort(inputArr: list[int]) -> int:  # return the number of key comparisons in the iteration
     numKeyComparisons = 0
-    
-    print(numKeyComparisons)
-    return
+    if len(inputArr) > 1:
+        midIndex = len(inputArr) // 2
+        leftSide = inputArr[:midIndex]
+        rightSide = inputArr[midIndex:]
+        
+        numKeyComparisons += mergeSort(leftSide)
+        numKeyComparisons += mergeSort(rightSide)
+        
+        i = j = k = 0
+        while i < len(leftSide) and j < len(rightSide):
+            numKeyComparisons += 1
+            if leftSide[i] <= rightSide[j]:
+                inputArr[k] = leftSide[i]
+                i += 1
+            else:
+                inputArr[k] = rightSide[j]
+                j += 1
+            k += 1
+            
+        while i < len(leftSide):
+            inputArr[k] = leftSide[i]
+            i += 1
+            k += 1
+        
+        while j < len(rightSide):
+            inputArr[k] = rightSide[j]
+            j += 1
+            k += 1
+            
+    return numKeyComparisons
 
 
 
@@ -69,4 +99,6 @@ mergeCopy = arr.copy()
 bubbleSort(bubbleCopy, arraySize)
 selectionSort(selectionCopy, arraySize)
 insertionSort(insertionCopy, arraySize)
-mergeSort(mergeCopy, arraySize)
+
+numComparisons = mergeSort(mergeCopy)
+print(numComparisons)
